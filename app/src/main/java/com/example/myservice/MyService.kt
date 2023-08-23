@@ -1,6 +1,7 @@
 package com.example.myservice
 
 import android.app.Notification
+import android.app.Notification.Action
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
@@ -32,8 +33,9 @@ class MyService : Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        //player!!.start()
         startForgroundNotification()
-        player!!.start()
+
         return START_NOT_STICKY
     }
 
@@ -62,6 +64,9 @@ class MyService : Service() {
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
             PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_ONE_SHOT
         else PendingIntent.FLAG_UPDATE_CURRENT)
+         //PendingIntent.FLAG_IMMUTABLE other applications receing pending intent cannot update the pending intent data
+         //PendingIntent.FLAG_MUTABLE  other applications receing pending intent can update the pending intent data by merging in
+            // pendingIntent.send()
 
 
         //android version greater than oreo version code 8
@@ -83,11 +88,11 @@ class MyService : Service() {
                 setContentInfo("This notification is for Playing music " +
                         "in background when app is killed")
                 setContentIntent(pendingIntent)
-
+                setSmallIcon(R.drawable.ic_launcher_foreground)
             }.build()
 
-         startForeground(1, notification)
-         //notifManager.notify(1, notification)
+         startForeground(1, notification) //starting from background thread
+         //notifManager.notify(1, notification) // starting notification from main thread
     }
 
 }
